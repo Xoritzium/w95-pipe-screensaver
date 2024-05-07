@@ -156,7 +156,7 @@ public class GridController : MonoBehaviour
 			}
 		}
 		//if field reaches it full capacity
-		if (potentialStartPositions.Count > FullFieldThreshold) {
+		if (potentialStartPositions.Count < FullFieldThreshold) {
 			RestartScene();
 		}
 

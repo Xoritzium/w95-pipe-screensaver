@@ -13,8 +13,14 @@ public class GridController : MonoBehaviour
 	[SerializeField, Tooltip("if there are less openFields than his digit, the simulation starts over")] int FullFieldThreshold;
 
 	[SerializeField] GameObject head;
-	[SerializeField] GameObject path;
+
+	[SerializeField] GameObject pipeContainer;
+	private GameObject currentPipeContainer;
+	private GameObject prevPipeContainer;
+	private bool firstContainer = true;
+
 	[SerializeField] GameObject border;
+
 
 	[SerializeField, Header("turn Probability"), Range(0f, 1f), Tooltip("1 results in turnless Pipes")]
 	private float turn;
@@ -25,12 +31,15 @@ public class GridController : MonoBehaviour
 	private Vector3Int currentPosition;
 	private Vector3Int nextPosition;
 
+	private Color currentColor;
+
 
 	private bool[,,] grid; // each coord has a dot, to avoid collisions
 						   // false = free space, true = taken (eg. borders, other pipes)
 
 	private void Start()
 	{
+
 
 		InitiateGrid(size);
 		startPosition = new(Random.Range(0, size), Random.Range(0, size), Random.Range(0, size));
@@ -40,6 +49,8 @@ public class GridController : MonoBehaviour
 
 		Debug.Log("startPosition: " + head.transform.position.ToString());
 		Debug.Log("free Fields: " + Mathf.Pow((size), 3));
+		currentColor = GetNewRandomColor();
+
 	}
 
 
@@ -133,7 +144,7 @@ public class GridController : MonoBehaviour
 					if (x == 0 || x == gridsize - 1 || y == 0 || y == gridsize - 1 || z == 0 || z == gridsize - 1) { // borders are blocked instant
 						grid[x, y, z] = true;
 
-					//	VisualizeBorders(x, y, z);
+						//	VisualizeBorders(x, y, z);
 					} else {
 						grid[x, y, z] = false;
 					}
@@ -161,6 +172,8 @@ public class GridController : MonoBehaviour
 		}
 
 
+
+		currentColor = GetNewRandomColor();
 		return potentialStartPositions[Random.Range(0, potentialStartPositions.Count)];
 	}
 
@@ -168,25 +181,6 @@ public class GridController : MonoBehaviour
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 	}
-	/// <summary>
-	/// visualize the borders  -> debugpurpose
-	/// </summary>
-	private void VisualizeBorders(int x, int y, int z)
-	{
-
-		Instantiate(border);
-		border.transform.position = new(x, y, z);
-	}
-	private void VisualizePath(Vector3 pos)
-	{
-		GameObject ins = Instantiate(path);
-		ins.transform.parent = transform;
-		ins.transform.position = pos;
-	}
-	/// <summary>
-	/// Weighted probability to run forward without any turn
-	/// </summary>
-	/// <returns></returns>
 	private bool StraightForward()
 	{
 		if (Random.value < turn) {
@@ -210,4 +204,49 @@ public class GridController : MonoBehaviour
 
 		return newPosition;
 	}
+
+	/*---------------------------------------------
+	 * ------------Visualisation-------------------
+	 * -------------------------------------------*/
+
+	/// <summary>
+	/// visualize the borders  -> debugpurpose
+	/// </summary>
+	/// 
+	private void VisualizeBorders(int x, int y, int z)
+	{
+
+		Instantiate(border);
+		border.transform.position = new(x, y, z);
+	}
+	/// <summary>
+	/// Instanziates the next Pipe. 
+	/// </summary>
+	/// <param name="pos">pos is the next position where the pipe is placed</param>
+	private void VisualizePath(Vector3Int pos)
+	{
+		if (prevPipeContainer != null) {
+			prevPipeContainer = currentPipeContainer; // will be the one of the last iteration.
+			prevPipeContainer.GetComponent<Pipe>().SetNextPipePosition(pos); //needs to get pos, not currentPos
+		}
+
+		currentPipeContainer = Instantiate(pipeContainer);
+		currentPipeContainer.transform.parent = transform;
+		Pipe currentPipe = currentPipeContainer.GetComponent<Pipe>();
+		currentPipe.InitiatePipe(pos, currentPosition, currentColor);
+
+		if (firstContainer) { // disables in the seconds loop
+			prevPipeContainer = currentPipeContainer; // just to ensure, prevPipeCon != null
+			firstContainer = false;
+		}
+
+	}
+
+
+	private Color GetNewRandomColor()
+	{
+
+		return new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+	}
+
 }

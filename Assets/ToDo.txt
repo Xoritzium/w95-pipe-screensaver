@@ -3,13 +3,6 @@
 
 
 
--> visualize the pipes properly -> s. scetching kernel ventus
--> on starting a new pipe change the color.
-
--> dark Skybox
--> light!
-
-
 advanced, improved version.
 
 -> model proper pipes

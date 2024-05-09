@@ -14,6 +14,8 @@ public class Pipe : MonoBehaviour
 	private Vector3 me;
 	[SerializeField]
 	private Vector3 nextPipe;
+	[SerializeField]
+	private float angle;
 
 	private Color thisColor;
 
@@ -55,23 +57,37 @@ public class Pipe : MonoBehaviour
 	{
 		nextPipe = nextPipePosition;
 
-		Vector3 prev_Me = previousPipe - me;
-		Vector3 me_Next = me - nextPipe;
-		Vector3 diff = me_Next - prev_Me;
+		Vector3 prev_Me = me - previousPipe;
+		Vector3 me_Next = nextPipe - me;
+		angle = Vector3.Angle(prev_Me, me_Next);
+
+		if (angle == 0) {
+			Debug.Log("angle = 0");
+			if (prev_Me.z != 0) {
+				transform.rotation = Quaternion.Euler(0, 90, 0);
+			} else if (prev_Me.z != 0) {
+				transform.rotation = Quaternion.Euler(0, 0, 90);
+			}
+
+			straight.SetActive(true);
+		}
 
 		//set correct Rotation and object!
-		straight.SetActive(true); 
-	//	CorrectRotation(prev_Me);
-		
+
+		//	CorrectRotation(prev_Me);
+
 
 
 
 		//erst in der 2. Runde, wenn alle bekannt sind
-	//	straight.SetActive(true);
+		//	straight.SetActive(true);try{
+		try {
 
-
-		Material material = GetComponentInChildren<MeshRenderer>().material = new Material(Shader.Find("Standard"));
-		material.color = thisColor;
+			Material material = GetComponentInChildren<MeshRenderer>().material = new Material(Shader.Find("Standard"));
+			material.color = thisColor;
+		} catch {
+			// nothing found
+		}
 	}
 
 

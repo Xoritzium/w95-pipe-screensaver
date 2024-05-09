@@ -31,6 +31,7 @@ public class GridController : MonoBehaviour
 	private Vector3Int currentPosition;
 	private Vector3Int nextPosition;
 
+
 	private Color currentColor;
 
 
@@ -227,7 +228,7 @@ public class GridController : MonoBehaviour
 	{
 		if (prevPipeContainer != null) {
 			prevPipeContainer = currentPipeContainer; // will be the one of the last iteration.
-			prevPipeContainer.GetComponent<Pipe>().SetNextPipePosition(pos); //needs to get pos, not currentPos
+			prevPipeContainer.GetComponent<Pipe>().SetNextPipePosition(pos); 
 		}
 
 		currentPipeContainer = Instantiate(pipeContainer);

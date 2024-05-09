@@ -175,6 +175,7 @@ public class GridController : MonoBehaviour
 
 
 		currentColor = GetNewRandomColor();
+		nextPosition = Vector3Int.zero;
 		return potentialStartPositions[Random.Range(0, potentialStartPositions.Count)];
 	}
 

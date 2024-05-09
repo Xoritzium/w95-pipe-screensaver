@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -57,30 +58,87 @@ public class Pipe : MonoBehaviour
 	{
 		nextPipe = nextPipePosition;
 
-		Vector3 prev_Me = me - previousPipe;
-		Vector3 me_Next = nextPipe - me;
+		Vector3 prev_Me = previousPipe - me;
+		Vector3 me_Next = nextPipe-me;
 		angle = Vector3.Angle(prev_Me, me_Next);
-
-		if (angle == 0) {
+		if (angle == 0 || angle == 180) {   // next and previous pipe are aligned
 			Debug.Log("angle = 0");
 			if (prev_Me.z != 0) {
 				transform.rotation = Quaternion.Euler(0, 90, 0);
-			} else if (prev_Me.z != 0) {
+			} else if (prev_Me.y != 0) {
 				transform.rotation = Quaternion.Euler(0, 0, 90);
 			}
-
 			straight.SetActive(true);
+		} else {
+
+			if (prev_Me.x == 1) { 
+
+				if (me_Next.y == -1) {
+					transform.rotation = Quaternion.Euler(90, 0, 0);
+				} else if (me_Next.y == 1) {
+					transform.rotation = Quaternion.Euler(-90, 0, 0);
+				} else if (me_Next.z == -1) {
+					transform.rotation = Quaternion.Euler(180, 0, 0);
+				}
+			} else if (prev_Me.x == -1) { 
+
+				if (me_Next.y == -1) {
+					transform.rotation = Quaternion.Euler(90, 180, 0);
+				} else if (me_Next.y == 1) {
+					transform.rotation = Quaternion.Euler(-90, 180, 0);
+				} else if (me_Next.z == -1) {
+					transform.rotation = Quaternion.Euler(0, 180 ,0);
+				} else if (me_Next.z == 1) {
+					transform.rotation = Quaternion.Euler(0, 0, 180);
+				}
+
+			} else if (prev_Me.y == -1) {
+				if (me_Next.x == 1) {
+					transform.rotation = Quaternion.Euler(0, 90, -90);
+				} else if (me_Next.x == -1) {
+					transform.rotation = Quaternion.Euler(0, -90, -90);
+				} else if (me_Next.z == -1) {
+					transform.rotation = Quaternion.Euler(0, 180, -90);
+				} else if (me_Next.z == 1) {
+					transform.rotation = Quaternion.Euler(0, 0, -90);
+				}
+
+			} else if (prev_Me.y == 1) {
+				if (me_Next.x == 1) {
+					transform.rotation = Quaternion.Euler(0, 90, 90);
+				} else if (me_Next.x == -1) {
+					transform.rotation = Quaternion.Euler(0, -90, 90);
+				} else if (me_Next.z == 1) {
+					transform.rotation = Quaternion.Euler(0, 0, 90);
+				} else if (me_Next.z == -1) {
+					transform.rotation = Quaternion.Euler(0, 180, 90);
+				}
+
+			} else if (prev_Me.z == 1) {
+				if (me_Next.x == -1) {
+					transform.rotation = Quaternion.Euler(0, 0, 180);
+				} else if (me_Next.y == 1) {
+					transform.rotation = Quaternion.Euler(0, 0, 90);
+				} else if (me_Next.y == -1) {
+					transform.rotation = Quaternion.Euler(0, 0, -90);
+				}
+			} else if (prev_Me.z == -1) {
+				if (me_Next.x == -1) {
+					transform.rotation = Quaternion.Euler(180, 90, 0);
+				} else if (me_Next.y == 1) {
+					transform.rotation = Quaternion.Euler(-90, 90, 0);
+				} else if (me_Next.y == -1) {
+					transform.rotation = Quaternion.Euler(90, 90, 0);
+				}else if (me_Next.x == 1) {
+					transform.rotation = Quaternion.Euler(180, 0, 0);
+				}
+			}
+
+
+
+
+			corner.SetActive(true);
 		}
-
-		//set correct Rotation and object!
-
-		//	CorrectRotation(prev_Me);
-
-
-
-
-		//erst in der 2. Runde, wenn alle bekannt sind
-		//	straight.SetActive(true);try{
 		try {
 
 			Material material = GetComponentInChildren<MeshRenderer>().material = new Material(Shader.Find("Standard"));

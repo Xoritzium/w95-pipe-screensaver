@@ -24,12 +24,14 @@ public class Pipe : MonoBehaviour
 	{
 		previousPipe = Vector3Int.zero;
 		nextPipe = Vector3Int.zero;
-
-
-
 	}
 
-
+	/// <summary>
+	/// Initiate the current Pipe and sets prevPos
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="prevPos"></param>
+	/// <param name="color"></param>
 	public void InitiatePipe(Vector3Int position, Vector3Int prevPos, Color color)
 	{
 
@@ -39,29 +41,18 @@ public class Pipe : MonoBehaviour
 		thisColor = color;
 
 	}
-
-	public void CorrectRotation(Vector3 dir)
-	{
-
-		if (dir.y == 1) {
-			this.transform.localRotation = Quaternion.Euler(0, 0, 90f);
-		} else if (dir.y == -1) {
-			this.transform.localRotation = Quaternion.Euler(0, 0, -90f);
-		} else if (dir.z == 1) {
-			this.transform.localRotation = Quaternion.Euler(0, -90f, 0);
-		} else if (dir.z == -1) {
-			this.transform.localRotation = Quaternion.Euler(0, 90f, 0);
-		}
-	}
-
+	/// <summary>
+	/// Visualizes this Pipe, sets the position and rotates the pipe correctly
+	/// </summary>
+	/// <param name="nextPipePosition"></param>
 	public void SetNextPipePosition(Vector3Int nextPipePosition)
 	{
 		nextPipe = nextPipePosition;
 
 		Vector3 prev_Me = previousPipe - me;
-		Vector3 me_Next = nextPipe-me;
+		Vector3 me_Next = nextPipe - me;
 		angle = Vector3.Angle(prev_Me, me_Next);
-		if (angle == 0 || angle == 180) {   // next and previous pipe are aligned
+		if (angle == 0 || angle == 180) {   // next and previous pipe are aligned -> straight pipe
 			Debug.Log("angle = 0");
 			if (prev_Me.z != 0) {
 				transform.rotation = Quaternion.Euler(0, 90, 0);
@@ -70,8 +61,8 @@ public class Pipe : MonoBehaviour
 			}
 			straight.SetActive(true);
 		} else {
-
-			if (prev_Me.x == 1) { 
+			// this pipe is a corner, figure out the right rotation.
+			if (prev_Me.x == 1) {
 
 				if (me_Next.y == -1) {
 					transform.rotation = Quaternion.Euler(90, 0, 0);
@@ -80,14 +71,14 @@ public class Pipe : MonoBehaviour
 				} else if (me_Next.z == -1) {
 					transform.rotation = Quaternion.Euler(180, 0, 0);
 				}
-			} else if (prev_Me.x == -1) { 
+			} else if (prev_Me.x == -1) {
 
 				if (me_Next.y == -1) {
 					transform.rotation = Quaternion.Euler(90, 180, 0);
 				} else if (me_Next.y == 1) {
 					transform.rotation = Quaternion.Euler(-90, 180, 0);
 				} else if (me_Next.z == -1) {
-					transform.rotation = Quaternion.Euler(0, 180 ,0);
+					transform.rotation = Quaternion.Euler(0, 180, 0);
 				} else if (me_Next.z == 1) {
 					transform.rotation = Quaternion.Euler(0, 0, 180);
 				}
@@ -129,22 +120,18 @@ public class Pipe : MonoBehaviour
 					transform.rotation = Quaternion.Euler(-90, 90, 0);
 				} else if (me_Next.y == -1) {
 					transform.rotation = Quaternion.Euler(90, 90, 0);
-				}else if (me_Next.x == 1) {
+				} else if (me_Next.x == 1) {
 					transform.rotation = Quaternion.Euler(180, 0, 0);
 				}
 			}
-
-
-
-
 			corner.SetActive(true);
 		}
+		//assign the currentColor
 		try {
-
 			Material material = GetComponentInChildren<MeshRenderer>().material = new Material(Shader.Find("Standard"));
 			material.color = thisColor;
 		} catch {
-			// nothing found
+			Debug.LogError("material or GameObject not found!");
 		}
 	}
 

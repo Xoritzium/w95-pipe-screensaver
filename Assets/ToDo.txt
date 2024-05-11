@@ -1,9 +1,2 @@
 
--> fixing turning -> just runs correctly until the first turn
-
-
-
-advanced, improved version.
-
--> model proper pipes
--> figure out how to assemble them correctly.
+-> fix turn straight

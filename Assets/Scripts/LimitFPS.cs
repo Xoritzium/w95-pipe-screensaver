@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Timeline;
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class LimitFPS : MonoBehaviour
 {
-    [SerializeField] int framerate;
-    // Start is called before the first frame update
-    void Start()
-    {
-        Application.targetFrameRate = framerate;
-
+	[SerializeField, Tooltip("Slower framerates results into slower PipeBilding")] int framerate;
+	void Start()
+	{
+		Application.targetFrameRate = framerate;
 	}
 
 }
